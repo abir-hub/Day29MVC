@@ -17,6 +17,12 @@ namespace Day30MVC.Models
         }
         public void UpdateEmp(int id, string name)
         {
+            Employee empUp = emps.Find(emp => emp.id == id);
+            if (empUp != null)
+            {
+                empUp.name = name;
+            }
+            
 
         }
         public void AddEmp(Employee emp) { this.emps.Add(emp); }

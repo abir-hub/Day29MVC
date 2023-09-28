@@ -1,0 +1,89 @@
+using Day31MVC.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Day31MVC.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        //public IActionResult Index()
+        //{
+        //          if (HttpContext.Request.Cookies.ContainsKey("Q1"))
+        //          {
+        //              var ans1 = HttpContext.Request.Cookies["Q1"];
+        //              TempData["Q1"] = ans1;
+        //          }
+        //          else
+        //              TempData["Q1"] = "";
+
+        //          return View();
+        //}
+        public IActionResult Index(string ans)
+        {
+            if (ans != null)
+                HttpContext.Response.Cookies.Append("Q2", ans);
+            if (HttpContext.Request.Cookies.ContainsKey("Q1"))
+            {
+                var ans1 = HttpContext.Request.Cookies["Q1"];
+                TempData["Q1"] = ans1;
+            }
+            else
+                TempData["Q1"] = "";
+
+            return View();
+        }
+
+        public IActionResult Index1(string ans)
+        {
+            if (ans != null)
+            {
+                HttpContext.Response.Cookies.Append("Q1", ans);
+                HttpContext.Response.Cookies.Append("Q3", ans);
+            }
+            if (HttpContext.Request.Cookies.ContainsKey("Q2"))
+            {
+                var ans2 = HttpContext.Request.Cookies["Q2"];
+                TempData["Q2"] = ans2;
+            }
+            else
+                TempData["Q2"] = "";
+            return View();
+        }
+        public IActionResult Index2(string ans)
+        {
+            if (ans != null)
+                HttpContext.Response.Cookies.Append("Q2", ans);
+
+            if (HttpContext.Request.Cookies.ContainsKey("Q3"))
+            {
+                var ans3 = HttpContext.Request.Cookies["Q3"];
+                TempData["Q3"] = ans3;
+            }
+            else
+                TempData["Q3"] = "";
+            return View();
+        }
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+}

@@ -1,0 +1,37 @@
+using Day37MVCAPI.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+namespace Day37MVCAPI.Controllers
+{
+
+    [ApiController]
+    [Produces("application/json")]
+    [Route("api/Students")]
+    public class StudentsController : ControllerBase
+    {
+        static private StudentContext students = new StudentContext();
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public ActionResult<IEnumerable<Student>> GetAllStudents()
+        {
+            return students.GetAllStudent();
+        }
+        [HttpGet("{id:int}")]
+        //[Route("api/Students/{id}")]
+        public ActionResult<Student> GetStudentById(int id)
+        {
+            return students.GetStudent(id);
+        }
+        //,{StName},{StSurName}
+        
+        [HttpGet("StdInfo")]
+        public ActionResult<IEnumerable<Student>> AddNewStudent(Student StdInfo)
+        {
+            students.AddStudent(StdInfo.StudentId, StdInfo.Name, StdInfo.SurName);
+            return students.GetAllStudent();
+        }
+    }
+
+}

@@ -35,3 +35,104 @@ namespace Day37MVCAPI.Controllers
     }
 
 }
+
+
+
+
+************************************************************************************
+
+using Day37MVCAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net.Http;
+using System;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+
+namespace Day37MVCAPI.Controllers
+{
+    public class ConsumerStdAPIController : Controller
+    {
+        //string Baseurl = $"{Request.Scheme}://{Request.Host.Value}/";
+
+        string Baseurl = "https://localhost:44323/";
+        
+        public async Task<IActionResult> Index()
+        {
+            List<Student> StdInfo = new List<Student>();
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                //Passing service base url
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //Sending request to find web api REST service resource GetAllStudents using HttpClient
+                HttpResponseMessage Res = await client.GetAsync("api/Students");
+                //Checking the response is successful or not which is sent using HttpClient
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api
+                    var StdResponse = Res.Content.ReadAsStringAsync().Result;
+                    //Deserializing the response recieved from web api and storing into the Student list
+                    StdInfo = JsonConvert.DeserializeObject<List<Student>>(StdResponse);
+                }
+                return View(StdInfo);
+            }
+        }
+
+        public async Task<IActionResult> GetStd(int id)
+        {
+            Student StdInfo = new Student();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Baseurl); //Passing service base url
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //Sending request to find web api REST service resource GetStudentById using HttpClient
+                HttpResponseMessage Res = await client.GetAsync("api/Students/" + id);
+                //Checking the response is successful or not which is sent using HttpClient
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api
+                    var StdResponse = Res.Content.ReadAsStringAsync().Result;
+                    StdInfo = JsonConvert.DeserializeObject<Student>(StdResponse);
+                }
+                return View(StdInfo);
+            }
+        }
+        public async Task<IActionResult> AddStd(int Stid, string StName, string StSurName)
+        {
+            List<Student> StdInfos = new List<Student>();
+            Student StdInfo = new Student();
+            StdInfo.StudentId = Stid;
+            StdInfo.Name = StName;
+            StdInfo.SurName = StSurName;
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                //Passing service base url
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //Sending request to find web api REST service resource GetAllStudents using HttpClient
+                
+                HttpResponseMessage Res = await client.GetAsync($"api/Students/"+StdInfo);
+                //await client.GetAsync($"api/Students/Stid={Stid}&StName={StName}&StSurName={StSurName}");
+                //await client.GetAsync("api/Students");
+                //Checking the response is successful or not which is sent using HttpClient
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api
+                    var StdResponse = Res.Content.ReadAsStringAsync().Result;
+                    //Deserializing the response recieved from web api and storing into the Student list
+                    StdInfos = JsonConvert.DeserializeObject<List<Student>>(StdResponse);
+                }
+                return View(StdInfos);
+            }
+        }
+        
+    }
+}
